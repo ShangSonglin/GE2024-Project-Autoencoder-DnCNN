@@ -82,9 +82,17 @@ def train_and_test_models():
     dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
+    print(f"Dataset size: {len(dataset)}")
+    print(f"Batch size: {batch_size}")
+
     # 初始化模型
     autoencoder_model = ConvAutoencoder()
     dncnn_model = DnCNN()
+
+    print("Autoencoder Model:")
+    print(autoencoder_model)
+    print("DnCNN Model:")
+    print(dncnn_model)
 
     # 初始化优化器
     optimizer_autoencoder = optim.Adam(autoencoder_model.parameters(), lr=learning_rate)
@@ -94,7 +102,8 @@ def train_and_test_models():
     criterion = nn.MSELoss()
 
     for epoch in range(num_epochs):
-        for batch in dataloader:
+        print(f"Epoch {epoch + 1}/{num_epochs}")
+        for batch_idx, batch in enumerate(dataloader):
             clean_images, _ = batch
             noisy_images = clean_images + torch.randn_like(clean_images) * 0.3
             noisy_images = torch.clamp(noisy_images, 0., 1.)
@@ -112,6 +121,11 @@ def train_and_test_models():
             loss_dncnn = criterion(dncnn_outputs, clean_images)
             loss_dncnn.backward()
             optimizer_dncnn.step()
+
+            if batch_idx % 100 == 0:  # 每100个批次打印一次
+                print(f"Batch {batch_idx + 1}/{len(dataloader)}")
+                print(f"Autoencoder Loss: {loss_autoencoder.item():.4f}")
+                print(f"DnCNN Loss: {loss_dncnn.item():.4f}")
 
         # 打印每个epoch的损失
         print(
