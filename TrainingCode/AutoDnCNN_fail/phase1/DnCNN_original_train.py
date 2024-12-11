@@ -27,7 +27,7 @@ cuda = torch.cuda.is_available()
 n_epoch = args.epoch
 sigma = args.sigma
 
-save_dir = os.path.join('../../models', args.model + '_' + 'sigma' + str(sigma))
+save_dir = os.path.join('../../AutoDnCNN_remake/models', args.model + '_' + 'sigma' + str(sigma))
 
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)

@@ -72,7 +72,7 @@ def parse_args():
     parser.add_argument('--set_dir', default=r'C:\Users\叶聪\learngit\DnCNN-Image-Denoising\Python-Practice\testsets', type=str, help='directory of test dataset')
     parser.add_argument('--set_names', default=['NoisyImages'], help='directory of test dataset')
     parser.add_argument('--sigma', default=25, type=int, help='noise level')
-    parser.add_argument('--model_dir', default=os.path.join('../models', 'DnCNN_sigma25'), help='directory of the model')
+    parser.add_argument('--model_dir', default=os.path.join('../AutoDnCNN_remake/models', 'DnCNN_sigma25'), help='directory of the model')
     parser.add_argument('--model_name', default='model.pth', type=str, help='the model name')
     parser.add_argument('--result_dir', default='results', type=str, help='directory of test dataset')
     parser.add_argument('--save_result', default=1, type=int, help='save the denoised image, 1 or 0')

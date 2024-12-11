@@ -9,8 +9,7 @@ from torchvision import datasets
 from torch.utils.data import DataLoader
 
 # 确保导入模型定义
-from TrainingCode.AutoDnCNN_remake.train.main_train import ConvAutoencoder, DnCNN
-
+from TrainingCode.AutoDnCNN_retrain.train.train import ConvAutoencoder, DnCNN
 
 def load_model(model_path, model_class):
     model = model_class()
@@ -18,12 +17,10 @@ def load_model(model_path, model_class):
     model.eval()
     return model
 
-
 def add_gaussian_noise(image, mean=0., std=0.1):
     noise = torch.randn_like(image) * std + mean
     noisy_image = image + noise
     return torch.clamp(noisy_image, 0., 1.)
-
 
 def denoise_image(autoencoder_model, dncnn_model, image):
     # 首先使用自动编码器去噪
@@ -34,15 +31,12 @@ def denoise_image(autoencoder_model, dncnn_model, image):
 
     return dncnn_output.squeeze()
 
-
 def save_result(result, path):
     result = np.clip(result, 0, 1)
     Image.fromarray((result * 255).astype(np.uint8)).save(path)
 
-
 def log(*args, **kwargs):
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S:"), *args, **kwargs)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -56,11 +50,18 @@ if __name__ == '__main__':
     os.makedirs(args.result_dir, exist_ok=True)  # 如果结果目录不存在，则创建
 
     # 加载模型
+    log('Loading AutoEncoder model...')
     autoencoder_model = load_model(os.path.join(args.model_dir, args.model_name_autoencoder), ConvAutoencoder)
+    log('AutoEncoder model loaded successfully.')
+
+    log('Loading DnCNN model...')
     dncnn_model = load_model(os.path.join(args.model_dir, args.model_name_dncnn), DnCNN)
+    log('DnCNN model loaded successfully.')
 
     # 加载MNIST测试集
     transform = transforms.Compose([
+        transforms.Resize((32, 32)),  # 确保与训练时的图像大小一致
+        transforms.Grayscale(),
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
     ])
@@ -86,3 +87,5 @@ if __name__ == '__main__':
         denoised_images = denoise_image(autoencoder_model, dncnn_model, noisy_images)
         save_result(denoised_images.detach().numpy(), os.path.join(args.result_dir, f'denoised_{batch_idx}.png'))
         log(f'Saved denoised image: denoised_{batch_idx}.png')
+
+    log('All images processed and saved successfully.')

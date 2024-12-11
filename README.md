@@ -1,4 +1,4 @@
-# DnCNN-Image-Denoising
+# AutoDnCNN-Image-Denoising
 
 ## Introduction
 This is an in-class research project on image denoising. Image denoising is an important problem in digital image processing, especially when noise is added to an image, which affects its quality. This project studies the method of image denoising using convolutional neural networks (CNNs). Compared to traditional denoising techniques, CNNs can automatically learn from data how to remove noise from images, showing better flexibility and effectiveness.
